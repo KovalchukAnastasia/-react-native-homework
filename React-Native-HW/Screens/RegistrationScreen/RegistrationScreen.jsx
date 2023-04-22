@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,9 +9,11 @@ import {
   Platform,
   Keyboard,
   Image,
+  TouchableWithoutFeedback,
+  ImageBackground,
 } from "react-native";
 
-export default function RegistrationScreen() {
+export default function RegistrationScreen({ navigation }) {
   const [state, setState] = useState({
     login: "",
     email: "",
@@ -58,103 +60,123 @@ export default function RegistrationScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
     >
-      <View style={styles.form}>
-        <View style={styles.avatar}>
-          <Image
-            style={styles.addIcon}
-            source={require("../../assets/icons/add.png")}
-          />
-        </View>
-        <Text style={styles.title}>Регистрация</Text>
-        <TextInput
-          style={
-            isFocused.login
-              ? {
-                  ...styles.input,
-                  borderColor: "#FF6C00",
-                  backgroundColor: "transparent",
+      <ImageBackground
+        style={styles.image}
+        source={require("../../assets/images/imageBackground.png")}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <View style={styles.form}>
+            <View style={styles.avatar}>
+              <Image
+                style={styles.addIcon}
+                source={require("../../assets/icons/add.png")}
+              />
+            </View>
+            <Text style={styles.title}>Регистрация</Text>
+            <TextInput
+              style={
+                isFocused.login
+                  ? {
+                      ...styles.input,
+                      borderColor: "#FF6C00",
+                      backgroundColor: "transparent",
+                    }
+                  : styles.input
+              }
+              placeholder="Логин"
+              cursorColor={"orange"}
+              value={state.login}
+              maxLength={12}
+              placeholderTextColor={"#BDBDBD"}
+              marginBottom={16}
+              onFocus={() => handleInputFocus("login")}
+              onChangeText={(value) => {
+                setState((prevState) => ({ ...prevState, login: value }));
+              }}
+            />
+            <TextInput
+              style={
+                isFocused.email
+                  ? {
+                      ...styles.input,
+                      borderColor: "#FF6C00",
+                      backgroundColor: "transparent",
+                    }
+                  : styles.input
+              }
+              placeholder="Адрес электронной почты"
+              cursorColor={"orange"}
+              placeholderTextColor={"#BDBDBD"}
+              marginBottom={16}
+              value={state.email}
+              onFocus={() => handleInputFocus("email")}
+              onChangeText={(value) => {
+                setState((prevState) => ({ ...prevState, email: value }));
+              }}
+            />
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={
+                  isFocused.password
+                    ? {
+                        ...styles.input,
+                        borderColor: "#FF6C00",
+                        backgroundColor: "transparent",
+                      }
+                    : styles.input
                 }
-              : styles.input
-          }
-          placeholder="Логин"
-          cursorColor={"orange"}
-          value={state.login}
-          maxLength={12}
-          placeholderTextColor={"#BDBDBD"}
-          marginBottom={16}
-          onFocus={() => handleInputFocus("login")}
-          onChangeText={(value) => {
-            setState((prevState) => ({ ...prevState, login: value }));
-          }}
-        />
-        <TextInput
-          style={
-            isFocused.email
-              ? {
-                  ...styles.input,
-                  borderColor: "#FF6C00",
-                  backgroundColor: "transparent",
-                }
-              : styles.input
-          }
-          placeholder="Адрес электронной почты"
-          cursorColor={"orange"}
-          placeholderTextColor={"#BDBDBD"}
-          marginBottom={16}
-          value={state.email}
-          onFocus={() => handleInputFocus("email")}
-          onChangeText={(value) => {
-            setState((prevState) => ({ ...prevState, email: value }));
-          }}
-        />
-        <View style={styles.passwordContainer}>
-          <TextInput
-            style={
-              isFocused.password
-                ? {
-                    ...styles.input,
-                    borderColor: "#FF6C00",
-                    backgroundColor: "transparent",
-                  }
-                : styles.input
-            }
-            placeholder="Пароль"
-            secureTextEntry={hidePassword}
-            cursorColor={"orange"}
-            placeholderTextColor={"#BDBDBD"}
-            marginBottom={isShowKeyboard ? 0 : 32}
-            value={state.password}
-            onFocus={() => handleInputFocus("password")}
-            onChangeText={(value) => {
-              setState((prevState) => ({ ...prevState, password: value }));
-            }}
-          />
-          <TouchableOpacity
-            style={styles.showPasswordBtn}
-            onPress={handleShowPassword}
-          >
-            <Text style={styles.showPasswordText}>
-              {hidePassword ? "Показать" : "Скрыть"}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        {!isShowKeyboard && (
-          <>
-            <TouchableOpacity
-              style={styles.button}
-              activeOpacity={0.6}
-              onPress={registerSubmit}
-            >
-              <Text style={styles.buttonText}>Зарегистрироваться</Text>
-            </TouchableOpacity>
-            <Text style={styles.text}>Уже есть аккаунт? Войти</Text>
-          </>
-        )}
-      </View>
-    </KeyboardAvoidingView>
+                placeholder="Пароль"
+                secureTextEntry={hidePassword}
+                cursorColor={"orange"}
+                placeholderTextColor={"#BDBDBD"}
+                marginBottom={isShowKeyboard ? 0 : 32}
+                value={state.password}
+                onFocus={() => handleInputFocus("password")}
+                onChangeText={(value) => {
+                  setState((prevState) => ({ ...prevState, password: value }));
+                }}
+              />
+              <TouchableOpacity
+                style={styles.showPasswordBtn}
+                onPress={handleShowPassword}
+              >
+                <Text style={styles.showPasswordText}>
+                  {hidePassword ? "Показать" : "Скрыть"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            {!isShowKeyboard && (
+              <>
+                <TouchableOpacity
+                  style={styles.button}
+                  activeOpacity={0.6}
+                  onPress={registerSubmit}
+                >
+                  <Text style={styles.buttonText}>Зарегистрироваться</Text>
+                </TouchableOpacity>
+
+                <Text style={styles.text}>
+                  Уже есть аккаунт?{" "}
+                  <Text
+                    onPress={() => navigation.navigate("Login")}
+                    style={styles.text}
+                  >
+                    Войти
+                  </Text>
+                </Text>
+              </>
+            )}
+          </View>
+        </KeyboardAvoidingView>
+      </ImageBackground>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -239,5 +261,10 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: "center",
     color: "#1B4371",
+  },
+  image: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "flex-end",
   },
 });

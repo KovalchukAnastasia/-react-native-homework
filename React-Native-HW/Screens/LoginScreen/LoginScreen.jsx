@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,9 +8,11 @@ import {
   KeyboardAvoidingView,
   Platform,
   Keyboard,
+  TouchableWithoutFeedback,
+  ImageBackground,
 } from "react-native";
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [state, setState] = useState({
     email: "",
     password: "",
@@ -55,77 +57,97 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
     >
-      <View style={styles.form}>
-        <Text style={styles.title}>Войти</Text>
+      <ImageBackground
+        style={styles.image}
+        source={require("../../assets/images/imageBackground.png")}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <View style={styles.form}>
+            <Text style={styles.title}>Войти</Text>
 
-        <TextInput
-          style={
-            isFocused.email
-              ? {
-                  ...styles.input,
-                  borderColor: "#FF6C00",
-                  backgroundColor: "transparent",
+            <TextInput
+              style={
+                isFocused.email
+                  ? {
+                      ...styles.input,
+                      borderColor: "#FF6C00",
+                      backgroundColor: "transparent",
+                    }
+                  : styles.input
+              }
+              placeholder="Адрес электронной почты"
+              cursorColor={"orange"}
+              placeholderTextColor={"#BDBDBD"}
+              marginBottom={16}
+              value={state.email}
+              onFocus={() => handleInputFocus("email")}
+              onChangeText={(value) => {
+                setState((prevState) => ({ ...prevState, email: value }));
+              }}
+            />
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={
+                  isFocused.password
+                    ? {
+                        ...styles.input,
+                        borderColor: "#FF6C00",
+                        backgroundColor: "transparent",
+                      }
+                    : styles.input
                 }
-              : styles.input
-          }
-          placeholder="Адрес электронной почты"
-          cursorColor={"orange"}
-          placeholderTextColor={"#BDBDBD"}
-          marginBottom={16}
-          value={state.email}
-          onFocus={() => handleInputFocus("email")}
-          onChangeText={(value) => {
-            setState((prevState) => ({ ...prevState, email: value }));
-          }}
-        />
-        <View style={styles.passwordContainer}>
-          <TextInput
-            style={
-              isFocused.password
-                ? {
-                    ...styles.input,
-                    borderColor: "#FF6C00",
-                    backgroundColor: "transparent",
-                  }
-                : styles.input
-            }
-            placeholder="Пароль"
-            secureTextEntry={hidePassword}
-            cursorColor={"orange"}
-            placeholderTextColor={"#BDBDBD"}
-            marginBottom={isShowKeyboard ? 0 : 32}
-            value={state.password}
-            onFocus={() => handleInputFocus("password")}
-            onChangeText={(value) => {
-              setState((prevState) => ({ ...prevState, password: value }));
-            }}
-          />
-          <TouchableOpacity
-            style={styles.showPasswordBtn}
-            onPress={handleShowPassword}
-          >
-            <Text style={styles.showPasswordText}>
-              {hidePassword ? "Показать" : "Скрыть"}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        {!isShowKeyboard && (
-          <>
-            <TouchableOpacity
-              style={styles.button}
-              activeOpacity={0.6}
-              onPress={registerSubmit}
-            >
-              <Text style={styles.buttonText}>Войти</Text>
-            </TouchableOpacity>
-            <Text style={styles.text}>Нет аккаунта? Зарегистрироваться</Text>
-          </>
-        )}
-      </View>
-    </KeyboardAvoidingView>
+                placeholder="Пароль"
+                secureTextEntry={hidePassword}
+                cursorColor={"orange"}
+                placeholderTextColor={"#BDBDBD"}
+                marginBottom={isShowKeyboard ? 0 : 32}
+                value={state.password}
+                onFocus={() => handleInputFocus("password")}
+                onChangeText={(value) => {
+                  setState((prevState) => ({ ...prevState, password: value }));
+                }}
+              />
+              <TouchableOpacity
+                style={styles.showPasswordBtn}
+                onPress={handleShowPassword}
+              >
+                <Text style={styles.showPasswordText}>
+                  {hidePassword ? "Показать" : "Скрыть"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            {!isShowKeyboard && (
+              <>
+                <TouchableOpacity
+                  style={styles.button}
+                  activeOpacity={0.6}
+                  onPress={registerSubmit}
+                >
+                  <Text style={styles.buttonText}>Войти</Text>
+                </TouchableOpacity>
+
+                <Text style={styles.text}>
+                  Нет аккаунта?{" "}
+                  <Text
+                    onPress={() => navigation.navigate("Register")}
+                    style={styles.text}
+                  >
+                    Зарегистрироваться
+                  </Text>
+                </Text>
+              </>
+            )}
+          </View>
+        </KeyboardAvoidingView>
+      </ImageBackground>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -195,5 +217,10 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: "center",
     color: "#1B4371",
+  },
+  image: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "flex-end",
   },
 });

@@ -1,18 +1,14 @@
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  View,
-  TouchableWithoutFeedback,
-  Keyboard,
-  ImageBackground,
-} from "react-native";
-import RegistrationScreen from "./Screens/RegistrationScreen/RegistrationScreen";
-import LoginScreen from "./Screens/LoginScreen/LoginScreen";
+import { StyleSheet, View } from "react-native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
-
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
+import { useRoute } from "./Screens/router";
 SplashScreen.preventAutoHideAsync();
+
+const AuthStack = createNativeStackNavigator();
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -29,23 +25,12 @@ export default function App() {
   if (!fontsLoaded) {
     return null;
   }
+  const routing = useRoute(false);
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <TouchableWithoutFeedback
-        onPress={() => {
-          Keyboard.dismiss();
-        }}
-      >
-        <ImageBackground
-          style={styles.image}
-          source={require("./assets/images/imageBackground.png")}
-        >
-          {/* <RegistrationScreen /> */}
-          <LoginScreen />
+      <NavigationContainer>{routing}</NavigationContainer>
 
-          <StatusBar style="auto" />
-        </ImageBackground>
-      </TouchableWithoutFeedback>
+      <StatusBar style="auto" />
     </View>
   );
 }
@@ -53,10 +38,5 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  image: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "flex-end",
   },
 });
